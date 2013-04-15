@@ -1,0 +1,56 @@
+﻿@model AgileWall.Domain.Conract.RequestDto.NewOrganizationRequestDto
+
+@{
+    ViewBag.Title = "Start using Collade to be more transparent and productive";
+}
+
+<h2>Create your organization profile</h2>
+
+<form method="POST" action="/org/new">
+
+    <div>
+        <label for="">Organization Name</label>
+        <input type="text" name="OrganizationName" value="@(Model.OrganizationName ?? string.Empty)" />
+    </div>
+
+    <div>
+        <label for="">Organization Url Name</label>
+        <input type="text" name="OrganizationUrlName" value="@(Model.OrganizationUrlName ?? string.Empty)" />
+    </div>
+
+    <div>
+        <label for="">First Name</label>
+        <input type="text" name="UserFirstName" value="@(Model.UserFirstName ?? string.Empty)" />
+    </div>
+
+    <div>
+        <label for="">Last Name</label>
+        <input type="text" name="UserLastName" value="@(Model.UserLastName ?? string.Empty)" />
+    </div>
+
+    <div>
+        <label for="">Email</label>
+        <input type="text" name="UserEmail" value="@(Model.UserEmail ?? string.Empty)" />
+    </div>
+
+    <div>
+        <label for="">Password</label>
+        <input type="text" name="UserPassword" value="@(Model.UserPassword ?? string.Empty)" />
+    </div>
+
+    <div>
+        @Html.AntiForgeryToken()
+        <input type="submit" value="Sign Up" />
+    </div>
+</form>
+
+
+@section Script {
+    <script>
+        $(document).ready(function () {
+            $('#OrganizationName').on("change", function () {
+                $('#OrganizationUrlName').val(convertToSlug($(this).val()));
+            });
+        });
+    </script>
+}

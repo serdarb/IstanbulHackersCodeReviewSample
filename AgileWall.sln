@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileWall.Test", "AgileWall.Test\AgileWall.Test.csproj", "{4EE2095A-37EE-43B8-8C81-DD0486441589}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8B13B48E-9759-4BBA-98C1-DB61F7A858FC}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileWall.Web", "AgileWall.Web\AgileWall.Web.csproj", "{B4F358E8-7047-42E8-B81A-3398A067746E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileWall.Utils", "AgileWall.Utils\AgileWall.Utils.csproj", "{0A5B2FB1-E823-40A9-9E92-C40CA9ABBA97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgileWall.Domain", "AgileWall.Domain\AgileWall.Domain.csproj", "{57B956F9-B4AF-404C-8A88-E86AB70B8BFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EE2095A-37EE-43B8-8C81-DD0486441589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EE2095A-37EE-43B8-8C81-DD0486441589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EE2095A-37EE-43B8-8C81-DD0486441589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EE2095A-37EE-43B8-8C81-DD0486441589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F358E8-7047-42E8-B81A-3398A067746E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F358E8-7047-42E8-B81A-3398A067746E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F358E8-7047-42E8-B81A-3398A067746E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F358E8-7047-42E8-B81A-3398A067746E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A5B2FB1-E823-40A9-9E92-C40CA9ABBA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A5B2FB1-E823-40A9-9E92-C40CA9ABBA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A5B2FB1-E823-40A9-9E92-C40CA9ABBA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A5B2FB1-E823-40A9-9E92-C40CA9ABBA97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57B956F9-B4AF-404C-8A88-E86AB70B8BFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57B956F9-B4AF-404C-8A88-E86AB70B8BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57B956F9-B4AF-404C-8A88-E86AB70B8BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57B956F9-B4AF-404C-8A88-E86AB70B8BFB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
