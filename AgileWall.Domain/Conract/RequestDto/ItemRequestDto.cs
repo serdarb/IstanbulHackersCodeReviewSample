@@ -30,5 +30,11 @@
                 _text = value;
             }
         }
+
+        public bool IsValid {
+            get {
+                return !string.IsNullOrEmpty(this.ItemId);
+            }
+        }
     }
 }

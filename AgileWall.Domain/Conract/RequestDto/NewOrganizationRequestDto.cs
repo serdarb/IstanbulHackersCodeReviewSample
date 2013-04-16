@@ -1,5 +1,7 @@
 namespace AgileWall.Domain.Conract.RequestDto
 {
+    using AgileWall.Utils;
+
     public class NewOrganizationRequestDto
     {
         private string _organizationName;
@@ -8,7 +10,6 @@ namespace AgileWall.Domain.Conract.RequestDto
         private string _userLastName;
         private string _userEmail;
         private string _userPassword;
-        private string _userName;
 
         public string OrganizationName
         {
@@ -103,6 +104,18 @@ namespace AgileWall.Domain.Conract.RequestDto
                 return string.Format("{0} {1}", UserFirstName, UserLastName);
             }
 
+        }
+
+        public bool IsValid {
+            get {
+                return !string.IsNullOrEmpty(UserEmail) 
+                       && !string.IsNullOrEmpty(OrganizationName)
+                       && !string.IsNullOrEmpty(OrganizationUrlName) 
+                       && !string.IsNullOrEmpty(UserFirstName)
+                       && !string.IsNullOrEmpty(UserLastName) 
+                       && !string.IsNullOrEmpty(UserPassword)
+                       && UserEmail.IsEmail();
+            }
         }
     }
 }
