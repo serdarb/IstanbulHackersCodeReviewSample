@@ -8,6 +8,7 @@ namespace AgileWall.Domain.Conract.RequestDto
         private string _userLastName;
         private string _userEmail;
         private string _userPassword;
+        private string _userName;
 
         public string OrganizationName
         {
@@ -85,6 +86,23 @@ namespace AgileWall.Domain.Conract.RequestDto
                 }
                 _userPassword = value;
             }
+        }
+
+        public string Initial
+        {
+            get
+            {
+                return string.Format("{0}{1}", UserFirstName[0], UserLastName[0]);
+            }
+        }
+
+        public string UserName
+        {
+            get
+            {
+                return string.Format("{0} {1}", UserFirstName, UserLastName);
+            }
+
         }
     }
 }

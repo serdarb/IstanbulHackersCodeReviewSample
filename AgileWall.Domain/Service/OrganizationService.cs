@@ -43,16 +43,15 @@
                     {
                         return null;
                     }
-
-                    var name = string.Format("{0} {1}", dto.UserFirstName, dto.UserLastName);
+                    
                     user = new User
                         {
                             Email = dto.UserEmail,
                             FirstName = dto.UserFirstName,
                             LastName = dto.UserLastName,
-                            Name = name,
-                            NameLowered = name.ToLowerInvariant(),
-                            Initial = string.Format("{0}{1}", dto.UserFirstName[0], dto.UserLastName[0]),
+                            Name = dto.UserName,
+                            NameLowered = dto.UserName.ToLowerInvariant(),
+                            Initial = dto.Initial,
                             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.UserPassword, BCrypt.Net.BCrypt.GenerateSalt(12)),
                             Roles = new List<string>()
                         };
