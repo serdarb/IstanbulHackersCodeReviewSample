@@ -26,89 +26,7 @@
             _userRepo = userRepo;
         }
 
-        public string CreateOrganization(NewOrganizationRequestDto dto)
-        {
-            if (!string.IsNullOrEmpty(dto.UserEmail)
-                && !string.IsNullOrEmpty(dto.OrganizationName)
-                && !string.IsNullOrEmpty(dto.OrganizationUrlName)
-
-                && dto.UserEmail.IsEmail())
-            {
-                var user = _userRepo.AsQueryable().FirstOrDefault(x => x.Email == dto.UserEmail);
-                if (user == null)
-                {
-                    if (string.IsNullOrEmpty(dto.UserFirstName)
-                        || string.IsNullOrEmpty(dto.UserLastName)
-                        || string.IsNullOrEmpty(dto.UserPassword))
-                    {
-                        return null;
-                    }
-                    
-                    user = new User
-                        {
-                            Email = dto.UserEmail,
-                            FirstName = dto.UserFirstName,
-                            LastName = dto.UserLastName,
-                            Name = dto.UserName,
-                            NameLowered = dto.UserName.ToLowerInvariant(),
-                            Initial = dto.Initial,
-                            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.UserPassword, BCrypt.Net.BCrypt.GenerateSalt(12)),
-                            Roles = new List<string>()
-                        };
-
-                    _userRepo.Add(user);
-                }
-
-                if (!_orgRepo.AsQueryable().Any(x => x.UserId == user.IdStr && x.Name == dto.OrganizationName))
-                {
-                    var urlname = UpdateSlugIfNecessary(dto.OrganizationUrlName);
-
-                    var org = new Organization
-                    {
-                        Name = dto.OrganizationName,
-                        NameLowered = dto.OrganizationName.ToLowerInvariant(),
-                        NameUrl = urlname,
-                        CreatedBy = user.IdStr,
-                        UpdatedBy = user.IdStr,
-                        UserId = user.IdStr,
-                        Users =
-                            new List<UserSummary> {
-                                                                                 new UserSummary {
-                                                                                                     UserId = user.IdStr,
-                                                                                                     Initial = user.Initial,
-                                                                                                     Name = user.Name
-                                                                                                 }
-                                                                             },
-                        WallIds = new List<string>(),
-                        Groups = Consts.DefaultGroups,
-                        CustomerType = "free",
-                        MaxUserCount = 2
-                    };
-
-                    var result = _orgRepo.Add(org);
-                    if (result.Ok)
-                    {
-                        var roles = new List<string> { string.Format(Consts.OrgRoleStringFormat, org.IdStr), string.Format(Consts.OrgAdminRoleStringFormat, org.IdStr) };
-                        foreach (var defaultGroup in Consts.DefaultGroups)
-                        {
-                            roles.Add(string.Format(Consts.OrgGroupRoleStringFormat, org.IdStr, defaultGroup));
-
-                            _orgRepo.Update(Query<Organization>.EQ(x => x.Id, org.Id),
-                                            Update<Organization>.Push(x => x.WallIds, Guid.NewGuid().ToString()));
-                        }
-
-                        _userRepo.Update(Query<User>.EQ(x => x.Id, user.Id),
-                                         Update<User>.Set(x => x.OrganizationId, org.IdStr)
-                                                     .PushAll(x => x.Roles, roles));
-
-                        return org.IdStr;
-                    }
-                }
-            }
-
-            return null;
-        }
-
+        #region Helper Methods
         private string UpdateSlugIfNecessary(string slug)
         {
             if (_orgRepo.AsQueryable().Any(x => x.NameUrl == slug))
@@ -118,6 +36,155 @@
 
             return slug;
         }
+
+        private string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password, BCrypt.Net.BCrypt.GenerateSalt(12));
+        }
+
+        private bool IsUserDoesNotHaveSameOrganizaiton(string userId, string organizationName)
+        {
+            return !_orgRepo.AsQueryable().Any(x => x.UserId == userId && x.Name == organizationName);
+        }
+
+        private void CreateGroupWallsAndSetUsersRoles(Organization org, User user)
+        {
+            var roles = CreateGroups(org);
+            SetUserRoles(org, user, roles);
+        }
+
+        private void SetUserRoles(Organization org, User user, List<string> roles)
+        {
+            _userRepo.Update(
+                Query<User>.EQ(x => x.Id, user.Id),
+                Update<User>.Set(x => x.OrganizationId, org.IdStr).PushAll(x => x.Roles, roles));
+        }
+
+        private List<string> CreateGroups(Organization org)
+        {
+            var roles = new List<string> {
+                                             string.Format(Consts.OrgRoleStringFormat, org.IdStr),
+                                             string.Format(Consts.OrgAdminRoleStringFormat, org.IdStr)
+                                         };
+            foreach (var defaultGroup in Consts.DefaultGroups)
+            {
+                roles.Add(string.Format(Consts.OrgGroupRoleStringFormat, org.IdStr, defaultGroup));
+
+                _orgRepo.Update(
+                    Query<Organization>.EQ(x => x.Id, org.Id),
+                    Update<Organization>.Push(x => x.WallIds, Guid.NewGuid().ToString()));
+            }
+            return roles;
+        }
+
+        private Organization MapOrganization(NewOrganizationRequestDto dto, User user)
+        {
+            var urlname = UpdateSlugIfNecessary(dto.OrganizationUrlName);
+            return new Organization
+            {
+                Name = dto.OrganizationName,
+                NameLowered = dto.OrganizationName.ToLowerInvariant(),
+                NameUrl = urlname,
+                CreatedBy = user.IdStr,
+                UpdatedBy = user.IdStr,
+                UserId = user.IdStr,
+                Users =
+                    new List<UserSummary> {
+                                                                      new UserSummary {
+                                                                                          UserId = user.IdStr,
+                                                                                          Initial = user.Initial,
+                                                                                          Name = user.Name
+                                                                                      }
+                                                                  },
+                WallIds = new List<string>(),
+                Groups = Consts.DefaultGroups,
+                CustomerType = "free",
+                MaxUserCount = 2
+            };
+        }
+
+        private User GetOrCreateUser(string email, string firstName, string lastName, string name, string initial, string password)
+        {
+            var user = _userRepo.AsQueryable().FirstOrDefault(x => x.Email == email);
+            if (user == null)
+            {
+                user = new User
+                {
+                    Email = email,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Name = name,
+                    NameLowered = name.ToLowerInvariant(),
+                    Initial = initial,
+                    PasswordHash = this.HashPassword(password),
+                    Roles = new List<string>()
+                };
+
+                _userRepo.Add(user);
+            }
+
+            return user;
+        }
+
+        private User GetUser(string email)
+        {
+            return _userRepo.AsQueryable().FirstOrDefault(x => x.Email == email);
+        }
+        #endregion
+
+
+        public string CreateOrganizationWithUser(NewOrganizationRequestDto dto)
+        {
+            if (dto.IsNotValid)
+            {
+                return null;
+            }
+
+            var user = GetOrCreateUser(dto.UserEmail, dto.UserFirstName, dto.UserLastName, dto.UserName, dto.Initial, dto.UserPassword);
+
+            if (IsUserDoesNotHaveSameOrganizaiton(user.IdStr, dto.OrganizationName))
+            {
+                var org = MapOrganization(dto, user);
+                var result = _orgRepo.Add(org);
+                if (result.Ok)
+                {
+                    CreateGroupWallsAndSetUsersRoles(org, user);
+
+                    return org.IdStr;
+                }
+            }
+
+            return null;
+        }
+
+        public string CreateOrganization(NewOrganizationRequestDto dto)
+        {
+            if (dto.IsNotValidForExistingUsersOrganizationCreation)
+            {
+                return null;
+            }
+
+            var user = GetUser(dto.UserEmail);
+            if (user == null)
+            {
+                return null;
+            }
+
+            if (IsUserDoesNotHaveSameOrganizaiton(user.IdStr, dto.OrganizationName))
+            {
+                var org = MapOrganization(dto, user);
+                var result = _orgRepo.Add(org);
+                if (result.Ok)
+                {
+                    CreateGroupWallsAndSetUsersRoles(org, user);
+
+                    return org.IdStr;
+                }
+            }
+
+            return null;
+        }
+        
 
         public Organization GetOrganizationById(string id)
         {

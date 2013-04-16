@@ -6,6 +6,7 @@ namespace AgileWall.Domain.Conract
     public interface IOrganizationService
     {
         string CreateOrganization(NewOrganizationRequestDto dto);
+        string CreateOrganizationWithUser(NewOrganizationRequestDto dto);
 
         Organization GetOrganizationById(string id);
         Organization GetOrganizationBySlug(string slug);

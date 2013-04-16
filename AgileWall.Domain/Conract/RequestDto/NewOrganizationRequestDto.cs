@@ -106,15 +106,44 @@ namespace AgileWall.Domain.Conract.RequestDto
 
         }
 
-        public bool IsValid {
-            get {
-                return !string.IsNullOrEmpty(UserEmail) 
+        public bool IsValid
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(UserEmail)
                        && !string.IsNullOrEmpty(OrganizationName)
-                       && !string.IsNullOrEmpty(OrganizationUrlName) 
+                       && !string.IsNullOrEmpty(OrganizationUrlName)
                        && !string.IsNullOrEmpty(UserFirstName)
-                       && !string.IsNullOrEmpty(UserLastName) 
+                       && !string.IsNullOrEmpty(UserLastName)
                        && !string.IsNullOrEmpty(UserPassword)
                        && UserEmail.IsEmail();
+            }
+        }
+
+        public bool IsNotValid
+        {
+            get
+            {
+                return !IsValid;
+            }
+        }
+
+        public bool IsValidForExistingUsersOrganizationCreation
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(UserEmail)
+                       && !string.IsNullOrEmpty(OrganizationName)
+                       && !string.IsNullOrEmpty(OrganizationUrlName)
+                       && UserEmail.IsEmail();
+            }
+        }
+
+        public bool IsNotValidForExistingUsersOrganizationCreation
+        {
+            get
+            {
+                return !IsValidForExistingUsersOrganizationCreation;
             }
         }
     }

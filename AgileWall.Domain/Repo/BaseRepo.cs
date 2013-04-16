@@ -52,7 +52,7 @@
 
         public TEntity GetSingle(Expression<Func<TEntity, bool>> expression)
         {
-            return AsQueryable().Where(expression).FirstOrDefault();
+            return AsQueryable().FirstOrDefault(expression);
         }
 
         public WriteConcernResult Add(TEntity entity)
