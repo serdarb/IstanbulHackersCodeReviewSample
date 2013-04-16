@@ -68,26 +68,27 @@
                         urlname = string.Format("{0}-{1}", urlname, _orgRepo.AsQueryable().Count(x => x.NameUrl.StartsWith(urlname)) + 1);
                     }
 
-                    var org = new Organization {
-                                                   Name = dto.OrganizationName,
-                                                   NameLowered = dto.OrganizationName.ToLowerInvariant(),
-                                                   NameUrl = urlname,
-                                                   CreatedBy = user.IdStr,
-                                                   UpdatedBy = user.IdStr,
-                                                   UserId = user.IdStr,
-                                                   Users =
-                                                       new List<UserSummary> {
+                    var org = new Organization
+                    {
+                        Name = dto.OrganizationName,
+                        NameLowered = dto.OrganizationName.ToLowerInvariant(),
+                        NameUrl = urlname,
+                        CreatedBy = user.IdStr,
+                        UpdatedBy = user.IdStr,
+                        UserId = user.IdStr,
+                        Users =
+                            new List<UserSummary> {
                                                                                  new UserSummary {
                                                                                                      UserId = user.IdStr,
                                                                                                      Initial = user.Initial,
                                                                                                      Name = user.Name
                                                                                                  }
                                                                              },
-                                                   WallIds = new List<string>(),
-                                                   Groups = Consts.DefaultGroups,
-                                                   CustomerType = "free",
-                                                   MaxUserCount = 2
-                                               };
+                        WallIds = new List<string>(),
+                        Groups = Consts.DefaultGroups,
+                        CustomerType = "free",
+                        MaxUserCount = 2
+                    };
 
                     var result = _orgRepo.Add(org);
                     if (result.Ok)
@@ -113,17 +114,22 @@
             return null;
         }
 
-        public Organization GetOrganizationByIdOrUrlName(ItemRequestDto dto)
+        public Organization GetOrganizationById(string id)
         {
-            ObjectId id;
-            if (ObjectId.TryParse(dto.Text, out id))
+            ObjectId oId;
+            if (ObjectId.TryParse(id, out oId))
             {
-                return _orgRepo.GetSingle(x => x.Id == id);
+                return _orgRepo.GetSingle(x => x.Id == oId);
             }
 
-            if (!string.IsNullOrEmpty(dto.Text))
+            return null;
+        }
+
+        public Organization GetOrganizationBySlug(string slug)
+        {
+            if (!string.IsNullOrEmpty(slug))
             {
-                return _orgRepo.AsQueryable().FirstOrDefault(x => x.NameUrl == dto.Text.Trim());
+                return _orgRepo.AsQueryable().FirstOrDefault(x => x.NameUrl == slug.Trim());
             }
 
             return null;
