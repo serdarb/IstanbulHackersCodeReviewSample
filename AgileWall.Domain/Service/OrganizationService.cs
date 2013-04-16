@@ -62,11 +62,7 @@
 
                 if (!_orgRepo.AsQueryable().Any(x => x.UserId == user.IdStr && x.Name == dto.OrganizationName))
                 {
-                    var urlname = dto.OrganizationUrlName.Trim();
-                    if (_orgRepo.AsQueryable().Any(x => x.NameUrl == urlname))
-                    {
-                        urlname = string.Format("{0}-{1}", urlname, _orgRepo.AsQueryable().Count(x => x.NameUrl.StartsWith(urlname)) + 1);
-                    }
+                    var urlname = UpdateSlugIfNecessary(dto.OrganizationUrlName);
 
                     var org = new Organization
                     {
@@ -112,6 +108,16 @@
             }
 
             return null;
+        }
+
+        private string UpdateSlugIfNecessary(string slug)
+        {
+            if (_orgRepo.AsQueryable().Any(x => x.NameUrl == slug))
+            {
+                slug = string.Format("{0}-{1}", slug, _orgRepo.AsQueryable().Count(x => x.NameUrl.StartsWith(slug)) + 1);
+            }
+
+            return slug;
         }
 
         public Organization GetOrganizationById(string id)

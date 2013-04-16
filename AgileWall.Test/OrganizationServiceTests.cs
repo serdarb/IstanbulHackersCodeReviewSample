@@ -29,7 +29,7 @@ namespace AgileWall.Test
 
             Assert.IsNotNullOrEmpty(orgId);
 
-            var org = _organizationService.GetOrganizationByIdOrUrlName(new ItemRequestDto { Text = orgId });
+            var org = _organizationService.GetOrganizationById(orgId);
 
             Assert.IsNotNull(org);
             Assert.AreEqual(org.Name, DtoNewOrganizationRequestDto.OrganizationName);
@@ -44,7 +44,7 @@ namespace AgileWall.Test
 
             Assert.IsNotNullOrEmpty(orgId);
 
-            var org = _organizationService.GetOrganizationByIdOrUrlName(new ItemRequestDto { Text = orgId });
+            var org = _organizationService.GetOrganizationById(orgId);
 
             Assert.IsNotNull(org);
             Assert.AreEqual(org.Name, DtoNewOrganizationRequestDto.OrganizationName);
@@ -63,7 +63,7 @@ namespace AgileWall.Test
             var orgId = _organizationService.CreateOrganization(dto);
             Assert.IsNotNullOrEmpty(orgId);
 
-            var org = _organizationService.GetOrganizationByIdOrUrlName(new ItemRequestDto { Text = orgId });
+            var org = _organizationService.GetOrganizationById(orgId);
             Assert.IsNotNull(org);
 
             Assert.AreEqual(org.Name, dto.OrganizationName);
@@ -103,12 +103,12 @@ namespace AgileWall.Test
 
             Assert.IsNotNullOrEmpty(orgId);
 
-            var org = _organizationService.GetOrganizationByIdOrUrlName(new ItemRequestDto { Text = orgId });
+            var org = _organizationService.GetOrganizationById(orgId);
 
             Assert.IsNotNull(org);
             Assert.AreEqual(org.Name, dto.OrganizationName);
 
-            org = _organizationService.GetOrganizationByIdOrUrlName(new ItemRequestDto { Text = org.NameUrl });
+            org = _organizationService.GetOrganizationById(orgId);
 
             Assert.IsNotNull(org);
             Assert.AreEqual(org.Name, dto.OrganizationName);
